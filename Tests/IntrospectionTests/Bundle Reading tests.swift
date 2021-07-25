@@ -15,7 +15,10 @@ final class DeviceInfoTests: XCTestCase {
     func testCurrentDevice() {
         let current = Introspection.Device.current
         XCTAssertFalse(current.modelType.withoutTypeSafety().isEmpty)
-        XCTAssertNotNil(current.deviceClass)
+        
+        if !current.modelType.isSimulator {
+            XCTAssertNotNil(current.deviceClass, "Model isn't a simulator, but device class unknown: \(current)")
+        }
     }
     
     

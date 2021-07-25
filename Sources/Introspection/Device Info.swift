@@ -199,7 +199,7 @@ public extension Introspection.Device.ModelType {
     
     /// The model type prefix for Apple's MacBook Pro
     static let macBookPro: Self = "MacBookPro"
-
+    
     
     /// The model type prefix for Apple's iMac
     static let iMac: Self = "iMac"
@@ -279,12 +279,6 @@ public extension Introspection.Device {
 
 
 
-public extension Introspection.Device {
-    
-}
-
-
-
 public extension Introspection.Device.ModelType {
     
     /// The device class indicated by this model type, or `nil` if that can't be determined
@@ -313,6 +307,20 @@ public extension Introspection.Device.ModelType {
             
         default:
             return nil
+        }
+    }
+    
+    
+    /// Determines whether this model type likely represents a simulator
+    var isSimulator: Bool {
+        switch self {
+        case .iPhoneSimulator_i386,
+                .iPhoneSimulator_x86_64,
+                .iPhoneSimulator_arm64:
+            return true
+            
+        default:
+            return false
         }
     }
 }
