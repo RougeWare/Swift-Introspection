@@ -1,0 +1,52 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Swift-Range-Tools",
+        "repositoryURL": "https://github.com/RougeWare/Swift-Range-Tools.git",
+        "state": {
+          "branch": null,
+          "revision": "8efcac712d0bd765ac903cb9fd27cc49b6b4ce58",
+          "version": "1.2.1"
+        }
+      },
+      {
+        "package": "Swift-Safe-Collection-Access",
+        "repositoryURL": "https://github.com/RougeWare/Swift-Safe-Collection-Access.git",
+        "state": {
+          "branch": null,
+          "revision": "a2a2f8773f5e85804be785177fa3bf1abeb37dea",
+          "version": "2.2.2"
+        }
+      },
+      {
+        "package": "Swift-SemVer",
+        "repositoryURL": "https://github.com/RougeWare/Swift-SemVer.git",
+        "state": {
+          "branch": null,
+          "revision": "087d41c30c38237179e70178ce93895cd7ff0886",
+          "version": "2.0.0"
+        }
+      },
+      {
+        "package": "Swift-Special-String",
+        "repositoryURL": "https://github.com/RougeWare/Swift-Special-String.git",
+        "state": {
+          "branch": null,
+          "revision": "c5d067206fe1621f44cedb73d9f0d1f4b296838d",
+          "version": "1.1.3"
+        }
+      },
+      {
+        "package": "Swift-String-Integer-Access",
+        "repositoryURL": "https://github.com/RougeWare/Swift-String-Integer-Access.git",
+        "state": {
+          "branch": null,
+          "revision": "595374e76274a7e951ba183fdd7f443801091d14",
+          "version": "2.1.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
