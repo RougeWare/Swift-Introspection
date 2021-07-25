@@ -325,9 +325,9 @@ private func sysctl(category: CInt, value: CInt) -> String? {
     var mib = [category, value]
     
     var len = size_t()
-    var rstring: String? = nil
+    var rstring: String?
     
-    sysctl(&mib, 2, nil, &len, nil, 0 );
+    sysctl(&mib, 2, nil, &len, nil, 0 )
     let mallocated = malloc( len )
     defer {
         free(&rstring )
