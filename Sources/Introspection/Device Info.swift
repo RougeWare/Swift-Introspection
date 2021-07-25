@@ -41,13 +41,13 @@ public extension Introspection {
         
         
         /// Allows you to access any info about the device's model type as if it's info about the device
-        subscript <Value> (dynamicMember keyPath: KeyPath<ModelType, Value>) -> Value {
+        public subscript <Value> (dynamicMember keyPath: KeyPath<ModelType, Value>) -> Value {
             self.modelType[keyPath: keyPath]
         }
         
         
         /// Allows you to access any info about the current device as a static member of the `Device` type
-        static subscript <Value> (dynamicMember keyPath: KeyPath<Device, Value>) -> Value {
+        public static subscript <Value> (dynamicMember keyPath: KeyPath<Device, Value>) -> Value {
             Self.current[keyPath: keyPath]
         }
     }

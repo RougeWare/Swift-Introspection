@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Introspection
+import Introspection
 
 
 
