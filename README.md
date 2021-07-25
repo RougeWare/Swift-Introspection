@@ -1,6 +1,6 @@
 [![Tested on GitHub Actions](https://github.com/RougeWare/Swift-Introspection/actions/workflows/swift.yml/badge.svg)](https://github.com/RougeWare/Swift-Introspection/actions/workflows/swift.yml) [![](https://www.codefactor.io/repository/github/rougeware/swift-introspection/badge)](https://www.codefactor.io/repository/github/rougeware/swift-introspection)
 
-[![Swift 5.5](https://img.shields.io/badge/swift-5.5-brightgreen.svg?logo=swift&logoColor=white)](https://swift.org) [![swift package manager 5.5 is supported](https://img.shields.io/badge/swift%20package%20manager-5.5-brightgreen.svg)](https://swift.org/package-manager) [![Supports macOS, iOS, tvOS, watchOS, Linux, & Windows](https://img.shields.io/badge/macOS%20%7C%20iOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Linux%20%7C%20Windows-grey.svg)](./Package.swift) 
+[![Swift 5](https://img.shields.io/badge/swift-5.5-brightgreen.svg?logo=swift&logoColor=white)](https://swift.org) [![swift package manager 5.2 is supported](https://img.shields.io/badge/swift%20package%20manager-5.2-brightgreen.svg)](https://swift.org/package-manager) [![Supports macOS, iOS, tvOS, watchOS, Linux, & Windows](https://img.shields.io/badge/macOS%20%7C%20iOS%20%7C%20tvOS%20%7C%20watchOS%20%7C%20Linux%20%7C%20Windows-grey.svg)](./Package.swift) 
 [![](https://img.shields.io/github/release-date/rougeware/swift-introspection?label=latest%20release)](https://github.com/RougeWare/swift-introspection/releases/latest)
 
 
