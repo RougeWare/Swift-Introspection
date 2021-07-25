@@ -185,6 +185,9 @@ public extension Introspection.Device {
     
     /// Represents Apple's arm64 iPhone Simulator
     static let iPhoneSimulator_arm64 = Self(modelType: .iPhoneSimulator_arm64)
+    
+    /// Represents a VMWare virtual machine
+    static let vm_vmware = Self(modelType: .vm_vmware)
 }
 
 
@@ -239,6 +242,9 @@ public extension Introspection.Device.ModelType {
     
     /// The model type prefix for Apple's arm64 iPhone Simulator
     static let iPhoneSimulator_arm64: Self = "arm64"
+    
+    /// The model type prefix for a VMWare virtual machine
+    static let vm_vmware: Self = "VMware"
     
     
     /// A placeholder model type for when the model type cannot be identified
@@ -317,6 +323,18 @@ public extension Introspection.Device.ModelType {
         case .iPhoneSimulator_i386,
                 .iPhoneSimulator_x86_64,
                 .iPhoneSimulator_arm64:
+            return true
+            
+        default:
+            return false
+        }
+    }
+    
+    
+    /// Determines whether this model type likely represents a virtual machine
+    var isVirtualMachine: Bool {
+        switch self {
+        case .vm_vmware:
             return true
             
         default:

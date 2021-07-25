@@ -16,7 +16,9 @@ final class DeviceInfoTests: XCTestCase {
         let current = Introspection.Device.current
         XCTAssertFalse(current.modelType.withoutTypeSafety().isEmpty)
         
-        if !current.modelType.isSimulator {
+        if !current.modelType.isSimulator,
+           !current.modelType.isVirtualMachine
+        {
             XCTAssertNotNil(current.deviceClass, "Model isn't a simulator, but device class unknown: \(current)")
         }
     }
