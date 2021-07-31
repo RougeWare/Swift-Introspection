@@ -142,7 +142,7 @@ private extension SemVer {
     ///
     /// - Returns: A semantic version depicting this
     static func error(title: String, details: String...) -> Self {
-        self.init(0, 0, 0, preRelease: .init(["ERROR", title] + details))
+        self.init(0, 0, 0, preRelease: .init(identifiers: ["ERROR", title] + details))
     }
     
     
