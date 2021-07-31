@@ -7,7 +7,9 @@
 //
 
 import XCTest
+
 import Introspection
+import SemVer
 
 
 
@@ -15,5 +17,10 @@ final class BundleReadingTests: XCTestCase {
     func testAppVersion() {
         // I'm not entirely sure how to test this, but I poked through it in the console and it seems to work well
     }
+    
+    
+    func testSwiftBundleVersion() {
+        XCTAssertEqual(Bundle(path: "/usr/lib/swift")!.version, SemVer(0,0,0, preRelease: ["ERROR", "BundleInfoDictionaryValueNotFound", "CFBundleShortVersionString"]))
+        XCTAssertEqual(Bundle(path: "/usr/lib/swift")!.version.description, "0.0.0-ERROR.BundleInfoDictionaryValueNotFound.CFBundleShortVersionString")
+    }
 }
-
