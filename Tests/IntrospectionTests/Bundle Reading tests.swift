@@ -23,4 +23,12 @@ final class BundleReadingTests: XCTestCase {
         XCTAssertEqual(Bundle(path: "/usr/lib/swift")!.version, SemVer(0,0,0, preRelease: ["ERROR", "BundleInfoDictionaryValueNotFound", "CFBundleShortVersionString"]))
         XCTAssertEqual(Bundle(path: "/usr/lib/swift")!.version.description, "0.0.0-ERROR.BundleInfoDictionaryValueNotFound.CFBundleShortVersionString")
     }
+    
+    
+    func testAppName() {
+        XCTAssertEqual(Introspection.appName, "xctest")
+        XCTAssertEqual(Introspection.Bundle.name, "xctest")
+        XCTAssertEqual(Introspection.Bundle.name(of: .main), "xctest")
+        XCTAssertEqual(Bundle.main.name, "xctest")
+    }
 }
