@@ -155,6 +155,56 @@ private extension SemVer {
 
 
 
+// MARK: - App Name
+
+public extension Foundation.Bundle {
+    
+    /// Finds and returns the name this bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleName` entry as the name.
+    /// If `CFBundleName` is missing, the returned value is an empty string.
+    var name: String {
+        infoDictionary?["CFBundleName"] as? String ?? ""
+    }
+}
+
+
+
+public extension Introspection.Bundle {
+    
+    /// Finds and returns the name of the application bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleName` entry as the name.
+    /// If `CFBundleName` is missing, the returned value is an empty string.
+    static var name: String {
+        name(of: .main)
+    }
+    
+    
+    /// Finds and returns the semantic version of the given bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleName` entry as the name.
+    /// If `CFBundleName` is missing, the returned value is an empty string.
+    @inline(__always)
+    static func name(of bundle: Foundation.Bundle) -> String {
+        bundle.name
+    }
+}
+
+
+
+public extension Introspection {
+    
+    /// Finds and returns the name of the application bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleName` entry as the name.
+    /// If `CFBundleName` is missing, the returned value is an empty string.
+    @inline(__always)
+    static var appName: String { Bundle.name }
+}
+
+
+
 // MARK: - BundleObject
 
 public protocol BundleObject {}
