@@ -36,6 +36,57 @@ public extension Introspection.Bundle {
 
 
 
+// MARK: - Bundle ID
+
+public extension Foundation.Bundle {
+    
+    /// Finds and returns the ID this bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleIdentifier` entry as the ID.
+    /// If `CFBundleIdentifier` is missing, the returned value is `"ERROR.NO_BUNDLE_ID_FOUND"`.
+    var id: String {
+        Introspection.Bundle[bundle: self, "CFBundleIdentifier"] ?? "ERROR.NO_BUNDLE_ID_FOUND"
+    }
+}
+
+
+
+public extension Introspection.Bundle {
+    
+    /// Finds and returns the ID the main bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleIdentifier` entry as the ID.
+    /// If `CFBundleIdentifier` is missing, the returned value is `"ERROR.NO_BUNDLE_ID_FOUND"`.
+    @inline(__always)
+    static var id: String {
+        id(of: .main)
+    }
+    
+    
+    /// Finds and returns the ID the given bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleIdentifier` entry as the ID.
+    /// If `CFBundleIdentifier` is missing, the returned value is `"ERROR.NO_BUNDLE_ID_FOUND"`.
+    @inline(__always)
+    static func id(of bundle: Foundation.Bundle) -> String {
+        bundle.id
+    }
+}
+
+
+
+public extension Introspection {
+    
+    /// Finds and returns the ID of the main bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleIdentifier` entry as the ID.
+    /// If `CFBundleIdentifier` is missing, the returned value is `"ERROR.NO_BUNDLE_ID_FOUND"`.
+    @inline(__always)
+    static var bundleId: String { Bundle.id }
+}
+
+
+
 // MARK: - App Version
 
 public extension Foundation.Bundle {
@@ -56,7 +107,11 @@ public extension Foundation.Bundle {
             return .error(title: "BundleInfoDictionaryValueNotFound", details: "CFBundleShortVersionString")
         }
         
-        guard var baseVersion = SemVer(versionString) else {
+        guard
+            var baseVersion = SemVer(versionString)
+                ?? SemVer("\(versionString).0")
+                ?? SemVer("\(versionString).0.0")
+        else {
             return .error(title: "BundleInfoDictionaryValueInvalidFormat", details: "CFBundleShortVersionString")
         }
         
@@ -142,7 +197,8 @@ private extension SemVer {
     ///
     /// - Returns: A semantic version depicting this
     static func error(title: String, details: String...) -> Self {
-        self.init(0, 0, 0, preRelease: .init(identifiers: ["ERROR", title] + details))
+        self.init(0,0,0, preRelease: .init(identifiers: ["ERROR", title] + details))
+            ?? .init(0,0,0)
     }
     
     
@@ -181,7 +237,7 @@ public extension Introspection.Bundle {
     }
     
     
-    /// Finds and returns the semantic version of the given bundle.
+    /// Finds and returns the name of the given bundle.
     ///
     /// This uses the bundle's info dictionary's `CFBundleName` entry as the name.
     /// If `CFBundleName` is missing, the returned value is an empty string.

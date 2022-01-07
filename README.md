@@ -18,7 +18,8 @@ This includes some sugar for reading your app bundle:
 ```swift
 import Introspection
 
-Introspection.appName // The name of your app, as read from its bundle info
+Introspection.bundleId   // The ID of the main bundle, as read from its info dictionary (e.g. `com.acme.MyApp`)
+Introspection.appName    // The name of your app, as read from its bundle info
 Introspection.appVersion // The semantic version of your app, as read from its bundle info, parsed into a `SemVer` value
 ```
 
@@ -28,6 +29,7 @@ This package also includes a generic version reader for any bundle:
 ```swift
 import Introspection
 
+Introspection.Bundle.id(of: Bundle(for: SomeClass.self))
 Introspection.Bundle.name(of: Bundle(for: SomeClass.self))
 Introspection.Bundle.version(of: Bundle(for: SomeClass.self))
 ```

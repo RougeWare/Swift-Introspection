@@ -7,7 +7,12 @@
 //
 
 import Foundation
+
+#if os(macOS)
 import IOKit
+#elseif os(iOS) || os(tvOS)
+import UIKit
+#endif
 
 import SafeStringIntegerAccess
 import SpecialString
@@ -83,7 +88,11 @@ public extension Introspection.Device {
     
     /// The hardware model identifier, like `"MacBookPro16,1"` or `"iPad13,2"`
     static var hardwareModelIdentifierString: String? {
+        #if os(macOS)
         ioRegistryCfProperty(key: "model")
+        #elseif os(iOS) || os(tvOS)
+        UIDevice.current.modelName
+        #endif
     }
 }
 
@@ -369,6 +378,7 @@ private func sysctl(category: CInt, value: CInt) -> String? {
 
 
 
+#if os(macOS)
 private func ioRegistryCfProperty(key: String) -> String? {
     let service = IOServiceGetMatchingService(kIOMasterPortDefault,
                                               IOServiceMatching("IOPlatformExpertDevice"))
@@ -381,3 +391,32 @@ private func ioRegistryCfProperty(key: String) -> String? {
     return String(data: modelData, encoding: .utf8)?
         .trimmingCharacters(in: .controlCharacters)
 }
+#endif
+
+
+
+#if os(iOS) || os(tvOS)
+// From https://stackoverflow.com/a/11197770/453435
+
+extension UIDevice {
+    
+    /// The name of this device model, like `"iPhone13,1"` or `"iPad8,12"`
+    var modelName: String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        
+        return Mirror(reflecting: systemInfo.machine)
+            .children
+            .reduce(into: "") { identifier, element in
+                guard
+                    let value = element.value as? Int8,
+                    value != 0
+                else {
+                    return
+                }
+                
+                identifier += String(UnicodeScalar(UInt8(value)))
+            }
+    }
+}
+#endif
