@@ -56,7 +56,11 @@ public extension Foundation.Bundle {
             return .error(title: "BundleInfoDictionaryValueNotFound", details: "CFBundleShortVersionString")
         }
         
-        guard var baseVersion = SemVer(versionString) else {
+        guard
+            var baseVersion = SemVer(versionString)
+                ?? SemVer("\(versionString).0")
+                ?? SemVer("\(versionString).0.0")
+        else {
             return .error(title: "BundleInfoDictionaryValueInvalidFormat", details: "CFBundleShortVersionString")
         }
         
@@ -142,7 +146,8 @@ private extension SemVer {
     ///
     /// - Returns: A semantic version depicting this
     static func error(title: String, details: String...) -> Self {
-        self.init(0, 0, 0, preRelease: .init(identifiers: ["ERROR", title] + details))
+        self.init(0,0,0, preRelease: .init(identifiers: ["ERROR", title] + details))
+            ?? .init(0,0,0)
     }
     
     

@@ -2,7 +2,7 @@
   "object": {
     "pins": [
       {
-        "package": "Swift-Range-Tools",
+        "package": "RangeTools",
         "repositoryURL": "https://github.com/RougeWare/Swift-Range-Tools.git",
         "state": {
           "branch": null,
@@ -11,7 +11,7 @@
         }
       },
       {
-        "package": "Swift-Safe-Collection-Access",
+        "package": "SafeCollectionAccess",
         "repositoryURL": "https://github.com/RougeWare/Swift-Safe-Collection-Access.git",
         "state": {
           "branch": null,
@@ -20,16 +20,16 @@
         }
       },
       {
-        "package": "Swift-SemVer",
+        "package": "SemVer",
         "repositoryURL": "https://github.com/RougeWare/Swift-SemVer.git",
         "state": {
           "branch": null,
-          "revision": "087d41c30c38237179e70178ce93895cd7ff0886",
-          "version": "2.0.0"
+          "revision": "adcdc0836253c9bbb5b337eaa9d87553012ae248",
+          "version": "3.0.0-Beta.5"
         }
       },
       {
-        "package": "Swift-Special-String",
+        "package": "SpecialString",
         "repositoryURL": "https://github.com/RougeWare/Swift-Special-String.git",
         "state": {
           "branch": null,
@@ -38,7 +38,7 @@
         }
       },
       {
-        "package": "Swift-String-Integer-Access",
+        "package": "StringIntegerAccess",
         "repositoryURL": "https://github.com/RougeWare/Swift-String-Integer-Access.git",
         "state": {
           "branch": null,
