@@ -146,6 +146,12 @@ public extension Introspection.Device {
 //    }
     
     
+    /// Represents a generic Apple Mac.
+    ///
+    /// For some reason, some newer Mac models report themselves generically as `"Mac"`, rather than specifying what kind.
+    static let mac = Self(modelType: .mac)
+    
+    
     /// Represents Apple's MacBook
     static let macBook = Self(modelType: .macBook)
     
@@ -203,6 +209,13 @@ public extension Introspection.Device {
 
 public extension Introspection.Device.ModelType {
     
+    /// The model type prefix for Apple's generic Mac.
+    ///
+    /// For some reason, Apple seems to be making some devices just report themselves as just `"Mac"`.
+    /// For example, the 16-inch MacBook Pro (Nov 2024) reports itself as `"Mac16,7"`
+    static let mac: Self = "Mac"
+    
+    
     /// The model type prefix for Apple's MacBook
     static let macBook: Self = "MacBook"
     
@@ -251,6 +264,9 @@ public extension Introspection.Device.ModelType {
     
     /// The model type prefix for Apple's arm64 iPhone Simulator
     static let iPhoneSimulator_arm64: Self = "arm64"
+    
+    /// The model type prefix for a virtualized version of Apple's Mac
+    static let virtualizedMac: Self = "VirtualMac"
     
     /// The model type prefix for a VMWare virtual machine
     static let vm_vmware: Self = "VMware"
@@ -305,7 +321,8 @@ public extension Introspection.Device.ModelType {
         case .iMac, .iMacPro, .macMini, .macPro:
             return .desktop
             
-        case .macBook, .macBookAir, .macBookPro:
+        case .macBook, .macBookAir, .macBookPro,
+                .mac:
             return .laptop
             
         case .iPad:
@@ -343,7 +360,8 @@ public extension Introspection.Device.ModelType {
     /// Determines whether this model type likely represents a virtual machine
     var isVirtualMachine: Bool {
         switch self {
-        case .vm_vmware:
+        case .vm_vmware,
+                .virtualizedMac:
             return true
             
         default:

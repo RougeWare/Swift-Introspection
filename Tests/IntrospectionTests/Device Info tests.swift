@@ -34,6 +34,8 @@ final class DeviceInfoTests: XCTestCase {
     
     
     func testModelTypeInferredClassAccurate() {
+        XCTAssertEqual(Introspection.Device.mac.deviceClass, .laptop)
+        
         XCTAssertEqual(Introspection.Device.macBook.deviceClass, .laptop)
         XCTAssertEqual(Introspection.Device.macBookAir.deviceClass, .laptop)
         XCTAssertEqual(Introspection.Device.macBookPro.deviceClass, .laptop)
