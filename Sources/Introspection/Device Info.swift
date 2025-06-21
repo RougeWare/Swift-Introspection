@@ -265,6 +265,9 @@ public extension Introspection.Device.ModelType {
     /// The model type prefix for Apple's arm64 iPhone Simulator
     static let iPhoneSimulator_arm64: Self = "arm64"
     
+    /// The model type prefix for a virtualized version of Apple's Mac
+    static let virtualizedMac: Self = "VirtualMac"
+    
     /// The model type prefix for a VMWare virtual machine
     static let vm_vmware: Self = "VMware"
     
@@ -357,7 +360,8 @@ public extension Introspection.Device.ModelType {
     /// Determines whether this model type likely represents a virtual machine
     var isVirtualMachine: Bool {
         switch self {
-        case .vm_vmware:
+        case .vm_vmware,
+                .virtualizedMac:
             return true
             
         default:
