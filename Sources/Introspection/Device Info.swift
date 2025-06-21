@@ -146,6 +146,12 @@ public extension Introspection.Device {
 //    }
     
     
+    /// Represents a generic Apple Mac.
+    ///
+    /// For some reason, some newer Mac models report themselves generically as `"Mac"`, rather than specifying what kind.
+    static let mac = Self(modelType: .mac)
+    
+    
     /// Represents Apple's MacBook
     static let macBook = Self(modelType: .macBook)
     
