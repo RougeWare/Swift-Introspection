@@ -203,6 +203,13 @@ public extension Introspection.Device {
 
 public extension Introspection.Device.ModelType {
     
+    /// The model type prefix for Apple's generic Mac.
+    ///
+    /// For some reason, Apple seems to be making some devices just report themselves as just `"Mac"`.
+    /// For example, the 16-inch MacBook Pro (Nov 2024) reports itself as `"Mac16,7"`
+    static let mac: Self = "Mac"
+    
+    
     /// The model type prefix for Apple's MacBook
     static let macBook: Self = "MacBook"
     
@@ -305,7 +312,8 @@ public extension Introspection.Device.ModelType {
         case .iMac, .iMacPro, .macMini, .macPro:
             return .desktop
             
-        case .macBook, .macBookAir, .macBookPro:
+        case .macBook, .macBookAir, .macBookPro,
+                .mac:
             return .laptop
             
         case .iPad:
