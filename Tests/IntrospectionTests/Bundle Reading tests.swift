@@ -23,7 +23,8 @@ final class BundleReadingTests: XCTestCase {
     func testSwiftBundle() {
         XCTAssertEqual(Introspection.Bundle.id(of: .swift), "ERROR.NO_BUNDLE_ID_FOUND")
         
-        XCTAssertEqual(Introspection.Bundle.name(of: .swift), "")
+        XCTAssertEqual(Introspection.Bundle.name(of: .swift), nil)
+        XCTAssertEqual(Introspection.Bundle.executableName(of: .swift), nil)
         
         XCTAssertEqual(Introspection.Bundle.version(of: .swift), SemVer(0,0,0, preRelease: ["ERROR", "BundleInfoDictionaryValueNotFound", "CFBundleShortVersionString"]))
         XCTAssertEqual(Introspection.Bundle.version(of: .swift).description, "0.0.0-ERROR.BundleInfoDictionaryValueNotFound.CFBundleShortVersionString")
@@ -55,6 +56,14 @@ final class BundleReadingTests: XCTestCase {
         XCTAssertEqual(Introspection.Bundle.name, "xctest")
         XCTAssertEqual(Introspection.Bundle.name(of: .main), "xctest")
         XCTAssertEqual(Bundle.main.name, "xctest")
+        
+        
+        // MARK: Executable Name
+        
+        XCTAssertEqual(Introspection.executableName, "xctest")
+        XCTAssertEqual(Introspection.Bundle.executableName, "xctest")
+        XCTAssertEqual(Introspection.Bundle.executableName(of: .main), "xctest")
+        XCTAssertEqual(Bundle.main.executableName, "xctest")
         
         
         // MARK: Version

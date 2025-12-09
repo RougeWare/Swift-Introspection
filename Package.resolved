@@ -2,6 +2,24 @@
   "object": {
     "pins": [
       {
+        "package": "CollectionTools",
+        "repositoryURL": "https://github.com/RougeWare/Swift-Collection-Tools.git",
+        "state": {
+          "branch": null,
+          "revision": "1918c72a1dabbc3ffb92b7bd3ab84cb565951e50",
+          "version": "3.2.0"
+        }
+      },
+      {
+        "package": "FunctionTools",
+        "repositoryURL": "https://github.com/RougeWare/Swift-Function-Tools",
+        "state": {
+          "branch": null,
+          "revision": "a854f4ed89b7e404019b5a09d24e067acc15432d",
+          "version": "1.2.4"
+        }
+      },
+      {
         "package": "RangeTools",
         "repositoryURL": "https://github.com/RougeWare/Swift-Range-Tools.git",
         "state": {

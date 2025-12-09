@@ -23,6 +23,11 @@ Introspection.appName    // The name of your app, as read from its bundle info
 Introspection.appVersion // The semantic version of your app, as read from its bundle info, parsed into a `SemVer` value
 ```
 
+and generic executable:
+```swift
+Introspection.executableName // What you'd start with on the command line to run this program
+```
+
 
 This package also includes a generic version reader for any bundle:
 
