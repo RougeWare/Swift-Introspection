@@ -8,6 +8,7 @@
 
 import Foundation
 
+import CollectionTools
 import SemVer
 
 
@@ -218,9 +219,18 @@ public extension Foundation.Bundle {
     /// Finds and returns the name this bundle.
     ///
     /// This uses the bundle's info dictionary's `CFBundleName` entry as the name.
-    /// If `CFBundleName` is missing, the returned value is an empty string.
-    var name: String {
-        infoDictionary?["CFBundleName"] as? String ?? ""
+    /// If `CFBundleName` is missing, `nil` is returned.
+    var name: String? {
+        infoDictionary?["CFBundleName"] as? String
+    }
+    
+    
+    /// Finds and returns the name of the executable inside this bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleExecutable` entry as the executable name.
+    /// If `CFBundleExecutable` is missing, `nil` is returned.
+    var executableName: String? {
+        infoDictionary?["CFBundleExecutable"] as? String
     }
 }
 
@@ -231,8 +241,8 @@ public extension Introspection.Bundle {
     /// Finds and returns the name of the application bundle.
     ///
     /// This uses the bundle's info dictionary's `CFBundleName` entry as the name.
-    /// If `CFBundleName` is missing, the returned value is an empty string.
-    static var name: String {
+    /// If `CFBundleName` is missing, `nil` is returned.
+    static var name: String? {
         name(of: .main)
     }
     
@@ -240,10 +250,29 @@ public extension Introspection.Bundle {
     /// Finds and returns the name of the given bundle.
     ///
     /// This uses the bundle's info dictionary's `CFBundleName` entry as the name.
-    /// If `CFBundleName` is missing, the returned value is an empty string.
+    /// If `CFBundleName` is missing, `nil` is returned.
     @inline(__always)
-    static func name(of bundle: Foundation.Bundle) -> String {
+    static func name(of bundle: Foundation.Bundle) -> String? {
         bundle.name
+    }
+    
+    
+    /// Finds and returns the name of the application bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleExecutable` entry as the name.
+    /// If `CFBundleExecutable` is missing, `nil` is returned.
+    static var executableName: String? {
+        executableName(of: .main)
+    }
+    
+    
+    /// Finds and returns the name of the given bundle.
+    ///
+    /// This uses the bundle's info dictionary's `CFBundleExecutable` entry as the name.
+    /// If `CFBundleExecutable` is missing, `nil` is returned.
+    @inline(__always)
+    static func executableName(of bundle: Foundation.Bundle) -> String? {
+        bundle.executableName
     }
 }
 
@@ -251,12 +280,17 @@ public extension Introspection.Bundle {
 
 public extension Introspection {
     
-    /// Finds and returns the name of the application bundle.
+    /// Finds and returns the name of the application bundle or its contained executable.
     ///
-    /// This uses the bundle's info dictionary's `CFBundleName` entry as the name.
-    /// If `CFBundleName` is missing, the returned value is an empty string.
+    /// This first looks for the bundle's name, but if that isn't found then the executable name is returned (either the bundle's executable or the current process's).
     @inline(__always)
-    static var appName: String { Bundle.name }
+    static var appName: String { Bundle.name?.nonEmptyOrNil ?? Bundle.executableName?.nonEmptyOrNil ?? executableName /*?? "this app (name not found)"*/ }
+    
+    
+    /// Finds and returns the name of the currently-running process's main executable
+    static var executableName: String {
+        ProcessInfo.processInfo.processName
+    }
 }
 
 
