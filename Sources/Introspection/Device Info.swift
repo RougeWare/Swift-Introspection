@@ -2,8 +2,7 @@
 //  Device Info.swift
 //  Swift-Introspection
 //
-//  Created by Ky Leggiero on 2021-07-24.
-//  Copyright Ben 'Ky' Leggiero 2021 BH-1-PS
+//  Created by Ky on 2021-07-24.
 //
 
 import Foundation
