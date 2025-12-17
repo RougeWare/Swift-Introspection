@@ -20,6 +20,10 @@ final class DeviceInfoTests: XCTestCase {
            !current.modelType.isVirtualMachine
         {
             XCTAssertNotNil(current.deviceClass, "Model isn't a simulator, but device class unknown: \(current)")
+            
+            XCTAssert(current.hardwareModelIdentifier == Introspection.Device.HardwareModelIdentifier.current)
+            XCTAssert(nil != current.hardwareModelIdentifier, "Model isn't a simulator, but hardware model identifier is unknown: \(current)")
+            XCTAssert(nil != Introspection.Device.hardwareModelIdentifierString, "Model isn't a simulator, but hardware model identifier string is unknown: \(current)")
         }
     }
     
