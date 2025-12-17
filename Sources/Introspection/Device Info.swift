@@ -139,13 +139,19 @@ public extension Introspection.Device {
     
     
     /// Models the components of a hardware model identifier. So `"MacBookAir9,1"` would split into `{type: "MacBookAir", version: {full: "9,1", major: 9, minor: 1}}`
-    public struct HardwareModelIdentifier: Hashable {
+    struct HardwareModelIdentifier: Hashable {
         
         /// The "type" portion of the hardware model identifier, like `"MacBookAir"` or `"iPhone"`
         public let type: ModelType
         
         /// A breakdown of the "version" portion of the model identifier
         public let version: Version
+        
+        
+        public init(type: ModelType, version: Version) {
+            self.type = type
+            self.version = version
+        }
         
         
         
@@ -160,6 +166,13 @@ public extension Introspection.Device {
             
             /// The "minor version" portion of the model identifier. For `"iPad13,2"`, this would be `2`
             public let minor: Int
+            
+            
+            public init(full: String, major: Int, minor: Int) {
+                self.full = full
+                self.major = major
+                self.minor = minor
+            }
         }
     }
 }
