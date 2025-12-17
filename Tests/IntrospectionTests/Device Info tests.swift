@@ -11,7 +11,7 @@ import Introspection
 
 
 final class DeviceInfoTests: XCTestCase {
-    func testCurrentDevice() {
+    func testCurrentDevice() throws {
         let current = Introspection.Device.current
         XCTAssertFalse(current.modelType.withoutTypeSafety().isEmpty)
         
@@ -20,9 +20,15 @@ final class DeviceInfoTests: XCTestCase {
         {
             XCTAssertNotNil(current.deviceClass, "Model isn't a simulator, but device class unknown: \(current)")
             
-            XCTAssert(current.hardwareModelIdentifier == Introspection.Device.HardwareModelIdentifier.current)
-            XCTAssert(nil != current.hardwareModelIdentifier, "Model isn't a simulator, but hardware model identifier is unknown: \(current)")
+            let hardwareModelIdentifier = try XCTUnwrap(current.hardwareModelIdentifier, "Model isn't a simulator, but hardware model identifier is unknown: \(current)")
+            
+            XCTAssert(hardwareModelIdentifier == Introspection.Device.HardwareModelIdentifier.current)
             XCTAssert(nil != Introspection.Device.hardwareModelIdentifierString, "Model isn't a simulator, but hardware model identifier string is unknown: \(current)")
+            
+            XCTAssert(false == hardwareModelIdentifier.type.description.isEmpty, "Got the hardware model identifier, but the type is empty: \(hardwareModelIdentifier)")
+            XCTAssert(false == hardwareModelIdentifier.version.full.description.isEmpty, "Got the hardware model identifier, but the full version is empty: \(hardwareModelIdentifier)")
+            XCTAssert(false == hardwareModelIdentifier.version.major.description.isEmpty, "Got the hardware model identifier, but the major version is empty: \(hardwareModelIdentifier)")
+            XCTAssert(false == hardwareModelIdentifier.version.minor.description.isEmpty, "Got the hardware model identifier, but the minor version is empty: \(hardwareModelIdentifier)")
         }
     }
     

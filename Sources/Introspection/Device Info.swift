@@ -137,16 +137,29 @@ public extension Introspection.Device {
     fileprivate static let hardwareModelRegex = try! NSRegularExpression(pattern: #"^(?<Type>\w+?)(?<Version>(?<MajorVersion>\d+),(?<MinorVersion>\d+))$"#, options: [])
     
     
-    struct HardwareModelIdentifier: Hashable {
-        let type: ModelType
-        let version: Version
+    
+    /// Models the components of a hardware model identifier. So `"MacBookAir9,1"` would split into `{type: "MacBookAir", version: {full: "9,1", major: 9, minor: 1}}`
+    public struct HardwareModelIdentifier: Hashable {
+        
+        /// The "type" portion of the hardware model identifier, like `"MacBookAir"` or `"iPhone"`
+        public let type: ModelType
+        
+        /// A breakdown of the "version" portion of the model identifier
+        public let version: Version
         
         
         
-        struct Version: Hashable {
-            let full: String
-            let major: Int
-            let minor: Int
+        /// A breakdown of the "version" portion of a model identifier. In `"MacBookAir9,1"`, this would be the `9,1` part
+        public struct Version: Hashable {
+            
+            /// The raw "version" portion of the model identifier. For `"MacBookAir9,1"`, this would be `"9,1"`
+            public let full: String
+            
+            /// The "major version" portion of the model identifier. For `"iPhone18,2"`, this would be `18`
+            public let major: Int
+            
+            /// The "minor version" portion of the model identifier. For `"iPad13,2"`, this would be `2`
+            public let minor: Int
         }
     }
 }
