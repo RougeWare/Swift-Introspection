@@ -2,8 +2,7 @@
 //  Device Info.swift
 //  Swift-Introspection
 //
-//  Created by Ky Leggiero on 2021-07-24.
-//  Copyright Ben 'Ky' Leggiero 2021 BH-1-PS
+//  Created by Ky on 2021-07-24.
 //
 
 import Foundation
@@ -25,6 +24,11 @@ public extension Introspection {
     @dynamicMemberLookup
     struct Device {
         
+        /// The device’s hardware model identifier, like `{"Mac", 14, 8}` or `{"iPhone", 18, 2}`.
+        ///
+        /// `nil` signifies that it's unknown or unimportant to the current usecase.
+        public let hardwareModelIdentifier: HardwareModelIdentifier?
+        
         /// The device's model type, like `.macPro` or `.iPhone`
         public let modelType: ModelType
         
@@ -37,11 +41,13 @@ public extension Introspection {
         /// Creates a new `Device` value
         ///
         /// - Parameters:
+        ///   - hardwareModelIdentifier: _optional_ - The device's hardware model identifier, like `{"Mac", 14, 8}` or `{"iPhone", 18, 2}`
         ///   - modelType: The device's model type, like `.macBookPro` or `.iPad`
         ///   - `class`:  _optional_ - The device's class, like `.laptop` or `.tablet`. Defaults to inferring this from the model type.
-        public init(modelType: ModelType, `class`: Class? = nil) {
+        public init(hardwareModelIdentifier: HardwareModelIdentifier? = nil, modelType: ModelType, `class`: Class? = nil) {
+            self.hardwareModelIdentifier = hardwareModelIdentifier
             self.modelType = modelType
-            self.deviceClass = `class` ?? modelType.deviceClass
+            self.deviceClass = `class` ?? modelType.deviceClass // FIXME: For some fuckin reason, Apple's latest Mac Pro isn't `"MacPro14,8"`; it's `"Mac14,8"` :/
         }
         
         
@@ -79,7 +85,7 @@ public extension Introspection.Device {
 
 public extension Introspection.Device {
     
-    /// The  current device's hardware model type, like `"MacBookPro"` or `"iPad"`
+    /// The current device's hardware model type, like `"MacBookPro"` or `"iPad"`
     ///
     /// - Note: This relies on the return value from `sysctl`. There is a chance that it will not return a value at all, in which case, the value returned from this will be `.unknown`
     @inline(__always)
@@ -94,6 +100,77 @@ public extension Introspection.Device {
         UIDevice.current.modelName
         #endif
     }
+    
+    
+    /// The hardware model identifier of the current device, like `{"Mac", 14, 8}` or `{"iPhone", 18, 2}`
+    static let hardwareModelIdentifier: HardwareModelIdentifier? = {
+        guard let identifierString = hardwareModelIdentifierString else { return nil }
+        let match = hardwareModelRegex
+            .firstMatch(in: identifierString, options: .anchored, range: NSRange(location: 0, length: identifierString.count))
+        
+        guard let typeRange = match?.range(withName: "Type"),
+              let type = identifierString[orNil: typeRange],
+              
+              let versionRange = match?.range(withName: "Version"),
+              let version = identifierString[orNil: versionRange],
+              
+              let majorVersionRange = match?.range(withName: "MajorVersion"),
+              let majorVersionString = identifierString[orNil: majorVersionRange],
+              let majorVersion = Int(majorVersionString),
+              
+              let minorVersionRange = match?.range(withName: "MinorVersion"),
+              let minorVersionString = identifierString[orNil: minorVersionRange],
+              let minorVersion = Int(minorVersionString)
+        else {
+            print("malformed hardware model identifier: \(identifierString)")
+            return nil
+        }
+        
+        return HardwareModelIdentifier(
+            type: .init(String(type)),
+            version: .init(full: String(version), major: majorVersion, minor: minorVersion)
+        )
+    }()
+    
+    
+    /// Splits something like `"MacBookAir9,1"` into the groups `"Type"` (`"MacBookAir"`), `"Version"` (`"9,1"`), `"MajorVersion"` (`"9"`), and `"MinorVersion"` (`"1"`)
+    fileprivate static let hardwareModelRegex = try! NSRegularExpression(pattern: #"^(?<Type>\w+?)(?<Version>(?<MajorVersion>\d+),(?<MinorVersion>\d+))$"#, options: [])
+    
+    
+    
+    /// Models the components of a hardware model identifier. So `"MacBookAir9,1"` would split into `{type: "MacBookAir", version: {full: "9,1", major: 9, minor: 1}}`
+    public struct HardwareModelIdentifier: Hashable {
+        
+        /// The "type" portion of the hardware model identifier, like `"MacBookAir"` or `"iPhone"`
+        public let type: ModelType
+        
+        /// A breakdown of the "version" portion of the model identifier
+        public let version: Version
+        
+        
+        
+        /// A breakdown of the "version" portion of a model identifier. In `"MacBookAir9,1"`, this would be the `9,1` part
+        public struct Version: Hashable {
+            
+            /// The raw "version" portion of the model identifier. For `"MacBookAir9,1"`, this would be `"9,1"`
+            public let full: String
+            
+            /// The "major version" portion of the model identifier. For `"iPhone18,2"`, this would be `18`
+            public let major: Int
+            
+            /// The "minor version" portion of the model identifier. For `"iPad13,2"`, this would be `2`
+            public let minor: Int
+        }
+    }
+}
+
+
+
+public extension Introspection.Device.HardwareModelIdentifier {
+    /// The hardware model identifier of the current device, like `{"Mac", 14, 8}` or `{"iPhone", 18, 2}`
+    static var current: Self? {
+        Introspection.Device.hardwareModelIdentifier
+    }
 }
 
 
@@ -101,7 +178,7 @@ public extension Introspection.Device {
 public extension Introspection.Device.ModelType {
     
     
-    /// The  current device's hardware model type, like `"MacBookPro"` or `"iPad"`
+    /// The current device's hardware model type, like `"MacBookPro"` or `"iPad"`
     ///
     /// - Note: This relies on the return value from `sysctl`. There is a chance that it will not return a value at all, in which case, the value returned from this will be `.unknown`
     static var current: Self {
@@ -110,10 +187,10 @@ public extension Introspection.Device.ModelType {
         }
         
         guard
-            let matchRange = hardwareModelRegex
+            let typeRange = Introspection.Device.hardwareModelRegex
                 .firstMatch(in: identifier, options: .anchored, range: NSRange(location: 0, length: identifier.count))?
                 .range(withName: "Type"),
-            let type = identifier[orNil: matchRange]
+            let type = identifier[orNil: typeRange]
         else {
             // Not an Apple-format identifier; just return the string itself
             return .init(identifier)
@@ -121,10 +198,6 @@ public extension Introspection.Device.ModelType {
         
         return .init(.init(type))
     }
-    
-    
-    /// Splits something like `"MacBookAir9,1"` into the groups `"Type"` (`"MacBookAir"`), `"Version"` (`"9,1"`), `"MajorVersion"` (`"9"`), and `"MinorVersion"` (`"1"`)
-    private static let hardwareModelRegex = try! NSRegularExpression(pattern: #"^(?<Type>\w+?)(?<Version>(?<MajorVersion>\d+),(?<MinorVersion>\d+))$"#, options: [])
 }
 
 
@@ -134,7 +207,12 @@ public extension Introspection.Device.ModelType {
 public extension Introspection.Device {
     
     /// The current device
-    static var current: Self { self.init(modelType: .current) }
+    static var current: Self {
+        self.init(
+            hardwareModelIdentifier: .current,
+            modelType: .current
+        )
+    }
     
     
     // There's a bug in the Swift compiler that makes this impossible, so I have to enumerate them by-hand:
@@ -377,21 +455,17 @@ public extension Introspection.Device.ModelType {
 private func sysctl(category: CInt, value: CInt) -> String? {
     var mib = [category, value]
     
-    var len = size_t()
-    var rstring: String?
+    var len: size_t = 0
+    let getSizeResult = sysctl(&mib, 2, nil, &len, nil, 0)
+    guard getSizeResult == 0, len > 0 else { return nil }
     
-    sysctl(&mib, 2, nil, &len, nil, 0 )
-    let mallocated = malloc( len )
-    defer {
-        free(&rstring )
-        rstring = nil
-    }
+    let buffer = UnsafeMutablePointer<CChar>.allocate(capacity: len)
+    defer { buffer.deallocate() }
     
-    rstring = mallocated?.load(as: String.self)
+    let getResult = sysctl(&mib, 2, buffer, &len, nil, 0)
+    guard getResult == 0 else { return nil }
     
-    sysctl(&mib, 2, &rstring, &len, nil, 0 )
-    
-    return rstring
+    return String(validatingUTF8: buffer)
 }
 
 
