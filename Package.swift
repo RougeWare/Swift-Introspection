@@ -1,4 +1,4 @@
-// swift-tools-version:5.2
+// swift-tools-version:5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -7,10 +7,10 @@ let package = Package(
     name: "Introspection",
     
     platforms: [
-        .macOS(.v10_15),
-        .iOS(.v13),
-        .tvOS(.v13),
-        .watchOS(.v6),
+        .macOS(.v13),
+        .iOS(.v16),
+        .tvOS(.v16),
+        .watchOS(.v9),
     ],
     
     products: [
@@ -23,7 +23,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(name: "CollectionTools", url: "https://github.com/RougeWare/Swift-Collection-Tools.git", from: "3.2.0"),
-        .package(name: "SemVer", url: "https://github.com/RougeWare/Swift-SemVer.git", from: "3.0.0-Beta.5"),
+        .package(name: "SemVer", url: "https://github.com/RougeWare/Swift-SemVer.git", from: "3.0.0-Beta.6"),
         .package(name: "StringIntegerAccess", url: "https://github.com/RougeWare/Swift-String-Integer-Access.git", from: "2.1.0"),
         .package(name: "SpecialString", url: "https://github.com/RougeWare/Swift-Special-String.git", from: "1.1.3"),
     ],
