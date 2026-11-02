@@ -131,7 +131,7 @@ public extension Introspection.Device {
         public struct Version: Hashable {
             
             /// The raw "version" portion of the model identifier. For `"MacBookAir9,1"`, this would be `"9,1"`
-            public let full: String
+            public var full: String { "\(major),\(minor)" }
             
             /// The "major version" portion of the model identifier. For `"iPhone18,2"`, this would be `18`
             public let major: Int
@@ -140,8 +140,7 @@ public extension Introspection.Device {
             public let minor: Int
             
             
-            public init(full: String, major: Int, minor: Int) {
-                self.full = full
+            public init(major: Int, minor: Int) {
                 self.major = major
                 self.minor = minor
             }
@@ -171,14 +170,14 @@ public extension Introspection.Device.HardwareModelIdentifier {
         guard let typeRange = match?.range(withName: "Type"),
               let type = identifierString[orNil: typeRange],
               
-                let versionRange = match?.range(withName: "Version"),
+              let versionRange = match?.range(withName: "Version"),
               let version = identifierString[orNil: versionRange],
               
-                let majorVersionRange = match?.range(withName: "MajorVersion"),
+              let majorVersionRange = match?.range(withName: "MajorVersion"),
               let majorVersionString = identifierString[orNil: majorVersionRange],
               let majorVersion = Int(majorVersionString),
               
-                let minorVersionRange = match?.range(withName: "MinorVersion"),
+              let minorVersionRange = match?.range(withName: "MinorVersion"),
               let minorVersionString = identifierString[orNil: minorVersionRange],
               let minorVersion = Int(minorVersionString)
         else {
@@ -205,17 +204,8 @@ public extension Introspection.Device.ModelType {
             return .unknown
         }
         
-        guard
-            let typeRange = Introspection.Device.HardwareModelIdentifier.hardwareModelRegex
-                .firstMatch(in: identifier, options: .anchored, range: NSRange(location: 0, length: identifier.count))?
-                .range(withName: "Type"),
-            let type = identifier[orNil: typeRange]
-        else {
-            // Not an Apple-format identifier; just return the string itself
-            return .init(identifier)
-        }
-        
-        return .init(.init(type))
+        return Introspection.Device.HardwareModelIdentifier(parsing: identifier)?.type
+            ?? .init(identifier)
     }
 }
 
