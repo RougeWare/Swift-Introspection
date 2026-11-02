@@ -162,6 +162,11 @@ public extension Introspection.Device.HardwareModelIdentifier {
     
     
     /// Parses the given raw identifier string into a hardware model identifier, like `"iPhone19,4"`
+    ///
+    /// This is designed to parse real extant Hardware Model Identifiers. Other uses are not defined behavior.
+    ///
+    /// If you encounter a real Hardware Model Identifier that this incorrectly parses, report that as an error to https://github.com/RougeWare/Swift-Introspection/issues/new/choose
+    ///
     /// - Parameter identifierString: A valid hardware model identifier
     init?(parsing identifierString: String) {
         let match = Self.hardwareModelRegex
@@ -169,9 +174,6 @@ public extension Introspection.Device.HardwareModelIdentifier {
         
         guard let typeRange = match?.range(withName: "Type"),
               let type = identifierString[orNil: typeRange],
-              
-              let versionRange = match?.range(withName: "Version"),
-              let version = identifierString[orNil: versionRange],
               
               let majorVersionRange = match?.range(withName: "MajorVersion"),
               let majorVersionString = identifierString[orNil: majorVersionRange],
