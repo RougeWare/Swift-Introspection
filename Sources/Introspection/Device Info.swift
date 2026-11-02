@@ -186,7 +186,7 @@ public extension Introspection.Device.HardwareModelIdentifier {
         
         self.init(
             type: .init(String(type)),
-            version: .init(full: String(version), major: majorVersion, minor: minorVersion)
+            version: .init(major: majorVersion, minor: minorVersion)
         )
     }
 }
