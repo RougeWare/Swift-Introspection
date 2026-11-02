@@ -162,7 +162,7 @@ public extension Introspection.Device.HardwareModelIdentifier {
     fileprivate static let hardwareModelRegex = try! NSRegularExpression(pattern: #"^(?<Type>\w+?)(?<Version>(?<MajorVersion>\d+),(?<MinorVersion>\d+))$"#, options: [])
     
     
-    /// Parses the given raw identifier string into a hardware model identifier, like `"iPhone 19,4"`
+    /// Parses the given raw identifier string into a hardware model identifier, like `"iPhone19,4"`
     /// - Parameter identifierString: A valid hardware model identifier
     init?(parsing identifierString: String) {
         let match = Self.hardwareModelRegex
@@ -181,8 +181,7 @@ public extension Introspection.Device.HardwareModelIdentifier {
                 let minorVersionRange = match?.range(withName: "MinorVersion"),
               let minorVersionString = identifierString[orNil: minorVersionRange],
               let minorVersion = Int(minorVersionString)
-                else {
-            print("malformed hardware model identifier: \(identifierString)")
+        else {
             return nil
         }
         
