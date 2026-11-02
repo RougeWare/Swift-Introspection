@@ -105,41 +105,13 @@ public extension Introspection.Device {
     /// The hardware model identifier of the current device, like `{"Mac", 14, 8}` or `{"iPhone", 18, 2}`
     static let hardwareModelIdentifier: HardwareModelIdentifier? = {
         guard let identifierString = hardwareModelIdentifierString else { return nil }
-        let match = hardwareModelRegex
-            .firstMatch(in: identifierString, options: .anchored, range: NSRange(location: 0, length: identifierString.count))
-        
-        guard let typeRange = match?.range(withName: "Type"),
-              let type = identifierString[orNil: typeRange],
-              
-              let versionRange = match?.range(withName: "Version"),
-              let version = identifierString[orNil: versionRange],
-              
-              let majorVersionRange = match?.range(withName: "MajorVersion"),
-              let majorVersionString = identifierString[orNil: majorVersionRange],
-              let majorVersion = Int(majorVersionString),
-              
-              let minorVersionRange = match?.range(withName: "MinorVersion"),
-              let minorVersionString = identifierString[orNil: minorVersionRange],
-              let minorVersion = Int(minorVersionString)
-        else {
-            print("malformed hardware model identifier: \(identifierString)")
-            return nil
-        }
-        
-        return HardwareModelIdentifier(
-            type: .init(String(type)),
-            version: .init(full: String(version), major: majorVersion, minor: minorVersion)
-        )
+        return .init(parsing: identifierString)
     }()
-    
-    
-    /// Splits something like `"MacBookAir9,1"` into the groups `"Type"` (`"MacBookAir"`), `"Version"` (`"9,1"`), `"MajorVersion"` (`"9"`), and `"MinorVersion"` (`"1"`)
-    fileprivate static let hardwareModelRegex = try! NSRegularExpression(pattern: #"^(?<Type>\w+?)(?<Version>(?<MajorVersion>\d+),(?<MinorVersion>\d+))$"#, options: [])
     
     
     
     /// Models the components of a hardware model identifier. So `"MacBookAir9,1"` would split into `{type: "MacBookAir", version: {full: "9,1", major: 9, minor: 1}}`
-    public struct HardwareModelIdentifier: Hashable {
+    struct HardwareModelIdentifier: Hashable {
         
         /// The "type" portion of the hardware model identifier, like `"MacBookAir"` or `"iPhone"`
         public let type: ModelType
@@ -148,18 +120,30 @@ public extension Introspection.Device {
         public let version: Version
         
         
+        public init(type: ModelType, version: Version) {
+            self.type = type
+            self.version = version
+        }
+        
+        
         
         /// A breakdown of the "version" portion of a model identifier. In `"MacBookAir9,1"`, this would be the `9,1` part
         public struct Version: Hashable {
             
             /// The raw "version" portion of the model identifier. For `"MacBookAir9,1"`, this would be `"9,1"`
-            public let full: String
+            public var full: String { "\(major),\(minor)" }
             
             /// The "major version" portion of the model identifier. For `"iPhone18,2"`, this would be `18`
             public let major: Int
             
             /// The "minor version" portion of the model identifier. For `"iPad13,2"`, this would be `2`
             public let minor: Int
+            
+            
+            public init(major: Int, minor: Int) {
+                self.major = major
+                self.minor = minor
+            }
         }
     }
 }
@@ -170,6 +154,42 @@ public extension Introspection.Device.HardwareModelIdentifier {
     /// The hardware model identifier of the current device, like `{"Mac", 14, 8}` or `{"iPhone", 18, 2}`
     static var current: Self? {
         Introspection.Device.hardwareModelIdentifier
+    }
+    
+    
+    /// Splits something like `"MacBookAir9,1"` into the groups `"Type"` (`"MacBookAir"`), `"Version"` (`"9,1"`), `"MajorVersion"` (`"9"`), and `"MinorVersion"` (`"1"`)
+    fileprivate static let hardwareModelRegex = try! NSRegularExpression(pattern: #"^(?<Type>\w+?)(?<Version>(?<MajorVersion>\d+),(?<MinorVersion>\d+))$"#, options: [])
+    
+    
+    /// Parses the given raw identifier string into a hardware model identifier, like `"iPhone19,4"`
+    ///
+    /// This is designed to parse real extant Hardware Model Identifiers. Other uses are not defined behavior.
+    ///
+    /// If you encounter a real Hardware Model Identifier that this incorrectly parses, report that as an error to https://github.com/RougeWare/Swift-Introspection/issues/new/choose
+    ///
+    /// - Parameter identifierString: A valid hardware model identifier
+    init?(parsing identifierString: String) {
+        let match = Self.hardwareModelRegex
+            .firstMatch(in: identifierString, options: .anchored, range: NSRange(location: 0, length: identifierString.count))
+        
+        guard let typeRange = match?.range(withName: "Type"),
+              let type = identifierString[orNil: typeRange],
+              
+              let majorVersionRange = match?.range(withName: "MajorVersion"),
+              let majorVersionString = identifierString[orNil: majorVersionRange],
+              let majorVersion = Int(majorVersionString),
+              
+              let minorVersionRange = match?.range(withName: "MinorVersion"),
+              let minorVersionString = identifierString[orNil: minorVersionRange],
+              let minorVersion = Int(minorVersionString)
+        else {
+            return nil
+        }
+        
+        self.init(
+            type: .init(String(type)),
+            version: .init(major: majorVersion, minor: minorVersion)
+        )
     }
 }
 
@@ -186,17 +206,8 @@ public extension Introspection.Device.ModelType {
             return .unknown
         }
         
-        guard
-            let typeRange = Introspection.Device.hardwareModelRegex
-                .firstMatch(in: identifier, options: .anchored, range: NSRange(location: 0, length: identifier.count))?
-                .range(withName: "Type"),
-            let type = identifier[orNil: typeRange]
-        else {
-            // Not an Apple-format identifier; just return the string itself
-            return .init(identifier)
-        }
-        
-        return .init(.init(type))
+        return Introspection.Device.HardwareModelIdentifier(parsing: identifier)?.type
+            ?? .init(identifier)
     }
 }
 
