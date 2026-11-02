@@ -20,19 +20,19 @@ struct HardwareModelIdentifierTests {
 
     // MARK: - Memberwise initializers
 
-    @Test("`Version.init(full:major:minor:)` keeps exactly what it's given")
+    @Test("`Version.init(major:minor:)` keeps exactly what it's given, and `full` joins them")
     func versionInitializerKeepsItsArguments() {
-        let version = HardwareModelIdentifier.Version(full: "9,1", major: 9, minor: 1)
+        let version = HardwareModelIdentifier.Version(major: 9, minor: 1)
 
-        #expect("9,1" == version.full)
         #expect(9 == version.major)
         #expect(1 == version.minor)
+        #expect("9,1" == version.full)
     }
 
 
     @Test("`init(type:version:)` keeps exactly what it's given")
     func identifierInitializerKeepsItsArguments() {
-        let version = HardwareModelIdentifier.Version(full: "16,1", major: 16, minor: 1)
+        let version = HardwareModelIdentifier.Version(major: 16, minor: 1)
         let identifier = HardwareModelIdentifier(type: "MacBookPro", version: version)
 
         #expect("MacBookPro" == identifier.type.withoutTypeSafety())
@@ -42,8 +42,8 @@ struct HardwareModelIdentifierTests {
 
     @Test("Identifiers built from equal parts are equal, and hash the same")
     func equalPartsMakeEqualIdentifiers() {
-        let first = HardwareModelIdentifier(type: "iPad", version: .init(full: "13,2", major: 13, minor: 2))
-        let second = HardwareModelIdentifier(type: "iPad", version: .init(full: "13,2", major: 13, minor: 2))
+        let first = HardwareModelIdentifier(type: "iPad", version: .init(major: 13, minor: 2))
+        let second = HardwareModelIdentifier(type: "iPad", version: .init(major: 13, minor: 2))
 
         #expect(first == second)
         #expect(first.hashValue == second.hashValue)
@@ -53,11 +53,11 @@ struct HardwareModelIdentifierTests {
 
     @Test("Identifiers which differ in any one part are not equal")
     func differentPartsMakeDifferentIdentifiers() {
-        let original = HardwareModelIdentifier(type: "iPad", version: .init(full: "13,2", major: 13, minor: 2))
+        let original = HardwareModelIdentifier(type: "iPad", version: .init(major: 13, minor: 2))
 
-        #expect(original != HardwareModelIdentifier(type: "iPhone", version: .init(full: "13,2", major: 13, minor: 2)))
-        #expect(original != HardwareModelIdentifier(type: "iPad", version: .init(full: "14,2", major: 14, minor: 2)))
-        #expect(original != HardwareModelIdentifier(type: "iPad", version: .init(full: "13,3", major: 13, minor: 3)))
+        #expect(original != HardwareModelIdentifier(type: "iPhone", version: .init(major: 13, minor: 2)))
+        #expect(original != HardwareModelIdentifier(type: "iPad", version: .init(major: 14, minor: 2)))
+        #expect(original != HardwareModelIdentifier(type: "iPad", version: .init(major: 13, minor: 3)))
     }
 
 
@@ -102,7 +102,7 @@ struct HardwareModelIdentifierTests {
 
     @Test("An identifier parsed from a string equals one built from the same parts")
     func parsedIdentifierEqualsMemberwiseIdentifier() {
-        let built = HardwareModelIdentifier(type: "MacBookAir", version: .init(full: "9,1", major: 9, minor: 1))
+        let built = HardwareModelIdentifier(type: "MacBookAir", version: .init(major: 9, minor: 1))
 
         #expect(built == HardwareModelIdentifier(parsing: "MacBookAir9,1"))
     }
